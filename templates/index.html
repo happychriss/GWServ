@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title> GWServ 0.2 </title>
+</head>
+
+<body>
+<p>Welcome2</p>
+<!-- The table where all the data from the DB will be appeared -->
+
+<table class="data" border="1" style="width: 100%; margin-top: 20px; text-align: center;">
+    <tr>
+        <td>id</td>
+        <td>date</td>
+        <td>Battery[V]</td>
+    </tr>
+
+    <!-- The user_data is a variable containing all the user data from the DB. -->
+
+    {% for bat in gw_data %}
+        <tr>
+            <td>{{ bat.id }}</td>
+            <td>{{ bat.date }}</td>
+            <td>{{ bat.voltage }}</td>
+
+        </tr>
+    {% endfor %}
+
+</table>
+</body>
