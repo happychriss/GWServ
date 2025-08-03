@@ -10,21 +10,32 @@ CORS(app)
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config[ 'SQLALCHEMY_DATABASE_URI'] = 'postgresql://'+DB_PWD+'@zo:5432/goodwatch'
-#app.config[ 'SQLALCHEMY_DATABASE_URI'] = 'postgresql://cneuhaus:martin@zo:5432/goodwatch'
+
 db = SQLAlchemy(app)
 
 
 class GW_Battery(db.Model):
     __tablename__ = "gw_battery"
 
-    # Makes three columns into the table id, name, email
+    # Database columns
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    source = db.Column(db.String(50), nullable=True)
     voltage = db.Column(db.REAL, nullable=False)
+    capacity = db.Column(db.REAL, nullable=True)
+    warnings = db.Column(db.String(50), nullable=True)
+    bat_status_string = db.Column(db.String(50), nullable=True)
+    bat_slope = db.Column(db.REAL, nullable=True)
 
-    # A constructor function where we will pass the name and email of a user and it gets add as a new entry in the table.
-    def __init__(self, voltage):
+
+    # Constructor function
+    def __init__(self, source=None, voltage=None, capacity=None, warnings=None, bat_status_string=None, bat_slope=None):
+        self.source = source
         self.voltage = voltage
+        self.capacity = capacity
+        self.warnings = warnings
+        self.bat_status_string = bat_status_string
+        self.bat_slope = bat_slope
 
 
 # Control will come here and then gets redirect to the index function
@@ -40,6 +51,7 @@ def logwrite_json():
         if (content_type == 'application/json'):
             json_res = request.json
             bat = GW_Battery(**json_res)
+
             db.session.add(bat)
             db.session.commit()
 

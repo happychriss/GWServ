@@ -11,9 +11,14 @@
 
 <table class="data" border="1" style="width: 100%; margin-top: 20px; text-align: center;">
     <tr>
-        <td>id</td>
-        <td>date</td>
+        <td>ID</td>
+        <td>Date</td>
+        <td>Source</td>
         <td>Battery[V]</td>
+        <td>Capacity[%]</td>
+        <td>Warnings</td>
+        <td>Status</td>
+        <td>Slope</td>
     </tr>
 
     <!-- The user_data is a variable containing all the user data from the DB. -->
@@ -22,8 +27,12 @@
         <tr>
             <td>{{ bat.id }}</td>
             <td>{{ bat.date }}</td>
+            <td>{{ bat.source }}</td>
             <td>{{ bat.voltage }}</td>
-
+            <td>{{ bat.capacity }}</td>
+            <td>{{ bat.warnings }}</td>
+            <td>{{ bat.bat_status_string }}</td>
+            <td>{{ bat.bat_slope }}</td>
         </tr>
     {% endfor %}
 
