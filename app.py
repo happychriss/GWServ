@@ -26,22 +26,44 @@ class GW_Battery(db.Model):
     warnings = db.Column(db.String(50), nullable=True)
     bat_status_string = db.Column(db.String(50), nullable=True)
     bat_slope = db.Column(db.REAL, nullable=True)
-
+    nvs_log = db.Column(db.Text(25500), nullable=True)
 
     # Constructor function
-    def __init__(self, source=None, voltage=None, capacity=None, warnings=None, bat_status_string=None, bat_slope=None):
+    def __init__(self, source=None, voltage=None, capacity=None, warnings=None, bat_status_string=None, bat_slope=None, nvs_log=None):
         self.source = source
         self.voltage = voltage
         self.capacity = capacity
         self.warnings = warnings
         self.bat_status_string = bat_status_string
         self.bat_slope = bat_slope
+        self.nvs_log = nvs_log
 
 
 # Control will come here and then gets redirect to the index function
 @app.route("/")
 def home():
     return redirect(url_for('index'))
+
+
+@app.route("/log", methods=["POST"])
+def log_error():
+    try:
+        if request.headers.get('Content-Type') == 'application/json':
+            data = request.json
+            log_entry = data.get('log')
+            if log_entry:
+                bat = GW_Battery(nvs_log=log_entry,voltage=0)
+                db.session.add(bat)
+                db.session.commit()
+                return jsonify({"status": "success"}), 200
+            else:
+                return jsonify({"error": "Missing log field"}), 400
+        else:
+            return jsonify({"error": "Content-Type not supported!"}), 415
+    except Exception as e:
+        print(e)
+        return jsonify({"error": str(e)}), 400
+
 
 
 @app.route("/voltage", methods=["POST"])
